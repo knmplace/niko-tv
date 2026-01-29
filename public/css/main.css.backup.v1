@@ -2222,31 +2222,6 @@ kbd {
     width: 180px;
     height: 270px;
   }
-
-  /* MOBILE FIX: Force proper scroll on all pages */
-  .page {
-    overflow-y: scroll !important; /* Force scroll on mobile */
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pinch-zoom; /* Allow vertical scroll and zoom */
-  }
-
-  #page-home {
-    overflow-y: scroll !important;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pinch-zoom;
-  }
-
-  .watch-page {
-    height: calc(100vh - var(--navbar-height));
-    height: calc(100dvh - var(--navbar-height)); /* Modern browsers */
-    overflow-y: scroll !important; /* Force scroll, not auto */
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .watch-page.active {
-    display: flex;
-    flex-direction: column;
-  }
 }
 
 @media (max-width: 640px) {
@@ -2732,30 +2707,6 @@ kbd {
   .channel-nav {
     display: none;
     /* Hide channel nav in landscape to save space */
-  }
-
-  /* CRITICAL: Fix all page scrolling in landscape */
-  .page {
-    overflow-y: scroll !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-y pinch-zoom !important;
-  }
-
-  #page-home {
-    overflow-y: scroll !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-y pinch-zoom !important;
-  }
-
-  .watch-page {
-    overflow-y: scroll !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  .watch-video-section {
-    /* Prevent video from expanding beyond viewport */
-    max-height: calc(100vh - var(--navbar-height));
-    max-height: calc(100dvh - var(--navbar-height));
   }
 }
 
@@ -3399,7 +3350,6 @@ kbd {
   overflow-x: hidden;
   scroll-behavior: smooth;
   background: var(--color-bg-primary);
-  -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
 }
 
 .watch-page.active {
@@ -4563,14 +4513,12 @@ kbd {
 #page-home {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y pinch-zoom; /* Allow vertical scroll and zoom */
 }
 
 .dashboard-content {
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
-  touch-action: pan-y pinch-zoom; /* Propagate vertical scroll */
 }
 
 .dashboard-section {
@@ -4597,7 +4545,6 @@ kbd {
 /* Scroll Wrapper with Navigation Arrows */
 .scroll-wrapper {
   position: relative;
-  touch-action: pan-y; /* Allow vertical scroll to pass through to parent page */
 }
 
 .scroll-arrow {
@@ -4651,13 +4598,13 @@ kbd {
 }
 
 .horizontal-scroll {
+
   display: flex;
   gap: 20px;
   overflow-x: auto;
   padding-bottom: 12px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x; /* CRITICAL: Only allow horizontal scrolling, let vertical pass to parent */
 }
 
 /* Hide scrollbar by default, show on hover */
@@ -4871,33 +4818,5 @@ kbd {
   .tile-name {
     font-size: 0.7rem;
     max-width: 70px;
-  }
-}
-
-/* =====================================================
-   iPad-specific fixes (768px - 1024px)
-   ===================================================== */
-@media (min-width: 768px) and (max-width: 1024px) {
-  /* iPad needs explicit scroll behavior in both orientations */
-  .page {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pinch-zoom;
-  }
-
-  #page-home {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y pinch-zoom;
-  }
-
-  .watch-page {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .watch-video-section {
-    /* Ensure video section doesn't cause layout issues */
-    max-height: calc(100vh - var(--navbar-height));
   }
 }

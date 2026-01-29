@@ -98,50 +98,33 @@ class WatchPage {
     }
 
     init() {
-        // iOS Safari: Combined viewport update for orientation changes and dynamic toolbar
-        const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
-        const watchVideoSection = document.querySelector('.watch-video-section');
-
-        const updateIosViewport = () => {
-            // Update iOS UI bottom compensation
+        // iOS Safari: detect and compensate for floating bottom toolbar
+        const updateIosUiBottom = () => {
             let uiBottom = 0;
             if (window.visualViewport) {
                 const vv = window.visualViewport;
                 uiBottom = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
             }
             document.documentElement.style.setProperty('--ios-ui-bottom', uiBottom + 'px');
-
-            // Recalculate --vh on every resize/orientation change
-            if (isIOS) {
-                const vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
-
-                if (watchVideoSection) {
-                    watchVideoSection.style.height = 'calc(var(--vh) * 100 - var(--navbar-height))';
-                }
-
-                // DEBUG: Log orientation changes
-                console.log('[WatchPage] Viewport updated - innerHeight:', window.innerHeight, 'vh:', vh);
-            }
         };
 
-        // Initial update
-        updateIosViewport();
+        updateIosUiBottom();
 
-        // Listen to visualViewport events (iOS Safari)
         if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', updateIosViewport);
-            window.visualViewport.addEventListener('scroll', updateIosViewport);
+            window.visualViewport.addEventListener('resize', updateIosUiBottom);
+            window.visualViewport.addEventListener('scroll', updateIosUiBottom);
+        } else {
+            window.addEventListener('resize', updateIosUiBottom);
         }
 
-        // CRITICAL FIX: Add orientation change listener
-        window.addEventListener('orientationchange', () => {
-            console.log('[WatchPage] Orientation changed! Updating viewport in 100ms...');
-            setTimeout(updateIosViewport, 100);
-        });
-
-        // Fallback resize listener for devices without visualViewport
-        window.addEventListener('resize', updateIosViewport);
+        // iOS: use custom --vh unit to avoid 100vh issues with dynamic toolbar
+        const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+        const watchVideoSection = document.querySelector('.watch-video-section');
+        if (isIOS && watchVideoSection) {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            watchVideoSection.style.height = 'calc(var(--vh) * 100)';
+        }
 
         // Apply safe area + iOS toolbar padding to overlay
         if (this.overlay) {
@@ -212,10 +195,7 @@ class WatchPage {
         // Overlay auto-hide + click to toggle play
         const watchSection = document.querySelector('.watch-video-section');
         watchSection?.addEventListener('mousemove', () => this.showOverlay());
-        // CRITICAL FIX: Add { passive: true } to allow iOS scrolling
-        watchSection?.addEventListener('touchstart', (e) => {
-            this.showOverlay();
-        }, { passive: true });
+        watchSection?.addEventListener('touchstart', () => this.showOverlay());
         watchSection?.addEventListener('click', (e) => {
             this.showOverlay();
             // Only toggle play if clicking on video area (not controls)
